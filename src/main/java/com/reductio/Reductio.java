@@ -11,7 +11,15 @@ public class Reductio {
         this.expr = expr;
     }
     
-    public Function reduct(){
+    public Reductio reduct(){
+
+        return new Reductio(this.expr);
+        
+    }
+
+    public Function indendify(){
+
         return new Function();
+    
     }
 }
