@@ -22,4 +22,9 @@ public class Reductio {
         return new Function();
     
     }
+
+    public void format(){
+        
+    }
 }
+ 
