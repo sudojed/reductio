@@ -100,8 +100,8 @@ public class Reductio {
                     Double::sum);
         }
 
-        // reconstruir expressão reduzida
-        StringBuilder reduzida = new StringBuilder();
+        // reconstruir lista reduzida
+        List<Termo> reduzidos = new ArrayList<>();
         for (Map.Entry<String, Double> entry : termosMap.entrySet()) {
             double coef = entry.getValue();
             if (coef == 0)
@@ -111,22 +111,37 @@ public class Reductio {
             String variavel = partes[0].isEmpty() ? "" : partes[0];
             double expoente = Double.parseDouble(partes[1]);
 
-            // monta o termo de volta em formato string
+            reduzidos.add(new Termo(coef, variavel, expoente));
+        }
+
+        // ordenar por expoente decrescente
+        reduzidos.sort((a, b) -> Double.compare(b.getExpoente(), a.getExpoente()));
+
+        // montar expressão em string
+        StringBuilder reduzida = new StringBuilder();
+        for (Termo t : reduzidos) {
+            double coef = t.getCoeficiente();
+            String variavel = t.getVariavel();
+            double expoente = t.getExpoente();
+
             if (reduzida.length() > 0 && coef > 0) {
                 reduzida.append("+");
             }
 
-            if (expoente == 0 || variavel.isEmpty()) {
-                reduzida.append(coef);
+            // remove ".0" se coef ou expoente forem inteiros
+            String coefStr = (coef % 1 == 0) ? String.valueOf((int) coef) : String.valueOf(coef);
+            String expStr = (expoente % 1 == 0) ? String.valueOf((int) expoente) : String.valueOf(expoente);
+
+            if (expoente == 0 || variavel == null || variavel.isEmpty()) {
+                reduzida.append(coefStr);
             } else if (expoente == 1) {
-                reduzida.append(coef).append(variavel);
+                reduzida.append(coefStr).append(variavel);
             } else {
-                reduzida.append(coef).append(variavel).append("^").append((int) expoente);
+                reduzida.append(coefStr).append(variavel).append("^").append(expStr);
             }
         }
 
         this.expr = reduzida.toString();
-
         System.out.println("Expressão reduzida: " + this.expr);
     }
 
