@@ -7,7 +7,7 @@
     <!-- Troque pelo seu usuário do GitHub -->
     <groupId>com.github.sudojed</groupId>
     <artifactId>reductio</artifactId>
-    <version>0.1.0</version>
+    <version>0.1</version>
     <packaging>jar</packaging>
 
     <name>Reductio</name>

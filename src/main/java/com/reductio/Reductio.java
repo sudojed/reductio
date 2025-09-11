@@ -1,148 +1,156 @@
 package com.reductio;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.reductio.funcoes.Function;
-
-import lombok.Getter;
-import lombok.Setter;
-
-@Getter
-@Setter
-class Termo {
-    private Double coeficiente;
-    private String variavel;
-    private Double expoente;
-
-    public Termo(Double coeficiente, String variavel, Double expoente) {
-        this.coeficiente = coeficiente;
-        this.variavel = variavel;
-        this.expoente = expoente;
-    }
-
-    @Override
-    public String toString() {
-        return coeficiente + (variavel == null ? "" : variavel + "^" + expoente);
-    }
-}
-
-@Getter
 public class Reductio {
 
-    private String expr;
+    private final String originalExpr;
 
     public Reductio(String expr) {
-        this.expr = expr;
+        this.originalExpr = expr.replace(" ", ""); // remove espaços
+        runReductions();
+    }
+
+    private void runReductions() {
+        System.out.println("Expressão original: " + originalExpr);
+
+        String reduced = originalExpr;
+
+        // aplicar reduções em ordem lógica
+        reduced = reduceLogs(reduced);
+        System.out.println("Após log: " + reduced);
+
+        reduced = reduceExponentials(reduced);
+        System.out.println("Após exponenciais: " + reduced);
+
+        reduced = reducePowers(reduced);
+        System.out.println("Após potenciação: " + reduced);
+
+        reduced = reduceRoots(reduced);
+        System.out.println("Após radiciação: " + reduced);
+
+        reduced = reducePolynomials(reduced);
+        System.out.println("Após polinômios: " + reduced);
+
+        System.out.println("Final: " + reduced);
+    }
+
+    // ================= LOGS ==================
+    private String reduceLogs(String expr) {
+        Pattern logPattern = Pattern.compile("log(\\d+)\\(([^)]+)\\)");
+        Matcher matcher = logPattern.matcher(expr);
+
+        List<String> bases = new ArrayList<>();
+        List<String> valores = new ArrayList<>();
+        List<Boolean> isNegative = new ArrayList<>();
+
+        int lastEnd = 0;
+        while (matcher.find()) {
+            bases.add(matcher.group(1));
+            valores.add(matcher.group(2));
+
+            String antes = expr.substring(lastEnd, matcher.start());
+            isNegative.add(antes.endsWith("-"));
+
+            lastEnd = matcher.end();
+        }
+
+        if (bases.isEmpty())
+            return expr;
+        String base = bases.get(0);
+
+        List<String> numeradores = new ArrayList<>();
+        List<String> denominadores = new ArrayList<>();
+
+        for (int i = 0; i < valores.size(); i++) {
+            if (isNegative.get(i))
+                denominadores.add(valores.get(i));
+            else
+                numeradores.add(valores.get(i));
+        }
+
+        String numerador = numeradores.isEmpty() ? "1" : String.join("*", numeradores);
+        String denominador = denominadores.isEmpty() ? "1" : String.join("*", denominadores);
+
+        String reduzido = "log" + base + "(" + numerador + "/" + denominador + ")";
+        return expr.replaceAll("log\\d+\\([^)]*\\)([+\\-]log\\d+\\([^)]*\\))*", reduzido);
+    }
+
+    // ================= EXPONENCIAIS ==================
+    private String reduceExponentials(String expr) {
+        // simplificar exp(a)*exp(b) -> exp(a+b)
+        expr = expr.replaceAll("exp\\(([^)]+)\\)\\*exp\\(([^)]+)\\)", "exp($1+$2)");
+
+        // simplificar exp(a)/exp(b) -> exp(a-b)
+        expr = expr.replaceAll("exp\\(([^)]+)\\)/exp\\(([^)]+)\\)", "exp($1-$2)");
+
+        // exp(ln(x)) = x
+        expr = expr.replaceAll("exp\\(ln\\(([^)]+)\\)\\)", "$1");
+
+        return expr;
+    }
+
+    // ================= POTENCIAÇÃO ==================
+    private String reducePowers(String expr) {
+        // (x^a)^b -> x^(a*b)
+        expr = expr.replaceAll("\\(([^)]+)\\)\\^(\\d+)", "$1^$2");
+
+        // x^0 -> 1
+        expr = expr.replaceAll("([a-zA-Z]+)\\^0", "1");
+
+        // x^1 -> x
+        expr = expr.replaceAll("([a-zA-Z]+)\\^1", "$1");
+
+        return expr;
+    }
+
+    // ================= RADICIAÇÃO ==================
+    private String reduceRoots(String expr) {
+        // sqrt(x) -> x^(1/2)
+        expr = expr.replaceAll("sqrt\\(([^)]+)\\)", "($1)^(1/2)");
+
+        // nrt(x) -> x^(1/n)
+        expr = expr.replaceAll("(\\d+)rt\\(([^)]+)\\)", "($2)^(1/$1)");
+
+        return expr;
+    }
+
+    // ================= POLINÔMIOS ==================
+    private String reducePolynomials(String expr) {
+        Pattern termoPattern = Pattern.compile("([+-]?\\d*)x\\^(\\d+)");
+        Matcher matcher = termoPattern.matcher(expr);
+
+        Map<Integer, Integer> termos = new HashMap<>();
+
+        while (matcher.find()) {
+            String coefStr = matcher.group(1);
+            int coef = coefStr.equals("") || coefStr.equals("+") ? 1
+                    : coefStr.equals("-") ? -1 : Integer.parseInt(coefStr);
+            int exp = Integer.parseInt(matcher.group(2));
+            termos.put(exp, termos.getOrDefault(exp, 0) + coef);
+        }
+
+        String reduzido = expr;
+        for (Map.Entry<Integer, Integer> entry : termos.entrySet()) {
+            int exp = entry.getKey();
+            int coef = entry.getValue();
+            reduzido = reduzido.replaceAll("([+-]?\\d*)x\\^" + exp, "");
+            if (coef != 0) {
+                reduzido = coef + "x^" + exp + (reduzido.isEmpty() ? "" : "+" + reduzido);
+            }
+        }
+
+        reduzido = reduzido.replaceAll("\\+\\+", "+")
+                .replaceAll("\\+-", "-")
+                .replaceAll("-\\+", "-");
+        return reduzido;
     }
 
     public static void main(String[] args) {
-        Reductio reductio = new Reductio("3x^2-4x^2-5");
-        reductio.polinomialReduct();
+        // alguns testes
+        new Reductio("3x^2-4x^2+log2(8)-log2(16)-log2(100)+10^2");
+      
     }
-
-    public Reductio reduct() {
-
-        return this;
-
-    }
-
-    public Function indendify() {
-
-        return new Function();
-
-    }
-
-    private void polinomialReduct() {
-        this.expr = this.expr.replaceAll("\\s+", "");
-        String[] termosString = this.expr.split("(?=[+-])");
-        ArrayList<Termo> termos = new ArrayList<>();
-
-        for (String termo : termosString) {
-            Pattern pattern = Pattern.compile("([+-]?\\d*)?([a-zA-Z]+)?(\\^(\\d+))?");
-            Matcher matcher = pattern.matcher(termo);
-
-            if (matcher.matches()) {
-                String coefStr = matcher.group(1);
-                String variavel = matcher.group(2);
-                String expStr = matcher.group(4);
-
-                Double coeficiente;
-                if (coefStr == null || coefStr.isEmpty() || coefStr.equals("+") || coefStr.equals("-")) {
-                    coeficiente = (coefStr != null && coefStr.equals("-")) ? -1.0 : 1.0;
-                } else {
-                    coeficiente = Double.parseDouble(coefStr);
-                }
-
-                Double expoente = expStr != null
-                        ? Double.parseDouble(expStr)
-                        : (variavel != null ? 1.0 : 0.0);
-
-                termos.add(new Termo(coeficiente, variavel, expoente));
-            }
-        }
-
-        // agora agrupamos por (variável + expoente)
-        Map<String, Double> termosMap = new HashMap<>();
-
-        for (Termo termo : termos) {
-            String chave = (termo.getVariavel() == null ? "" : termo.getVariavel())
-                    + ":" + termo.getExpoente();
-
-            termosMap.merge(
-                    chave,
-                    termo.getCoeficiente(),
-                    Double::sum);
-        }
-
-        // reconstruir lista reduzida
-        List<Termo> reduzidos = new ArrayList<>();
-        for (Map.Entry<String, Double> entry : termosMap.entrySet()) {
-            double coef = entry.getValue();
-            if (coef == 0)
-                continue; // ignora termos anulados
-
-            String[] partes = entry.getKey().split(":");
-            String variavel = partes[0].isEmpty() ? "" : partes[0];
-            double expoente = Double.parseDouble(partes[1]);
-
-            reduzidos.add(new Termo(coef, variavel, expoente));
-        }
-
-        // ordenar por expoente decrescente
-        reduzidos.sort((a, b) -> Double.compare(b.getExpoente(), a.getExpoente()));
-
-        // montar expressão em string
-        StringBuilder reduzida = new StringBuilder();
-        for (Termo t : reduzidos) {
-            double coef = t.getCoeficiente();
-            String variavel = t.getVariavel();
-            double expoente = t.getExpoente();
-
-            if (reduzida.length() > 0 && coef > 0) {
-                reduzida.append("+");
-            }
-
-            // remove ".0" se coef ou expoente forem inteiros
-            String coefStr = (coef % 1 == 0) ? String.valueOf((int) coef) : String.valueOf(coef);
-            String expStr = (expoente % 1 == 0) ? String.valueOf((int) expoente) : String.valueOf(expoente);
-
-            if (expoente == 0 || variavel == null || variavel.isEmpty()) {
-                reduzida.append(coefStr);
-            } else if (expoente == 1) {
-                reduzida.append(coefStr).append(variavel);
-            } else {
-                reduzida.append(coefStr).append(variavel).append("^").append(expStr);
-            }
-        }
-
-        this.expr = reduzida.toString();
-        System.out.println("Expressão reduzida: " + this.expr);
-    }
-
 }
