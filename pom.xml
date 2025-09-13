@@ -52,12 +52,6 @@
         <tag>HEAD</tag>
     </scm>
 
-    <!-- Issue Management -->
-    <issueManagement>
-        <system>GitHub</system>
-        <url>https://github.com/sudojed/reductio/issues</url>
-    </issueManagement>
-
     <!-- Properties -->
     <properties>
         <!-- Java Version -->
