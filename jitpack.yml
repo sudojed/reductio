@@ -1,0 +1,38 @@
+# JitPack configuration file for Reductio library
+# This file optimizes the build process for JitPack.io
+
+# JDK version to use for building
+jdk:
+  - openjdk11
+
+# Build commands to execute
+install:
+  - mvn clean compile -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+
+# Environment variables
+env:
+  MAVEN_OPTS: "-Xmx1024m -XX:MaxPermSize=256m"
+
+# Before install hooks
+before_install:
+  - echo "Starting JitPack build for Reductio"
+  - java -version
+  - mvn -version
+
+# After success hooks
+after_success:
+  - echo "Build completed successfully"
+  - ls -la target/
+
+# Build timeout (in minutes)
+timeout: 15
+
+# Cache settings
+cache:
+  - ~/.m2/repository
+
+# Branches to build
+branches:
+  - main
+  - master
+  - develop

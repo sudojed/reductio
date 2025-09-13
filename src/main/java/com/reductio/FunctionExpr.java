@@ -1,6 +1,7 @@
 package com.reductio;
 
 import java.util.*;
+import java.util.Objects;
 
 // Funções (ln, sin, cos, etc.)
 public class FunctionExpr extends Expr {
@@ -29,11 +30,11 @@ public class FunctionExpr extends Expr {
         if (name.equals("ln") && A instanceof BinaryOp) {
             BinaryOp b = (BinaryOp) A;
             if (
-                b.op.equals("^") &&
-                b.left instanceof Variable &&
-                ((Variable) b.left).name.equals("e")
+                b.getOperator().equals("^") &&
+                b.getLeft() instanceof Variable &&
+                ((Variable) b.getLeft()).getName().equals("e")
             ) {
-                Expr result = b.right.simplify(steps, stepCounter);
+                Expr result = b.getRight().simplify(steps, stepCounter);
                 steps.put(stepCounter[0]++, result.show());
                 return result;
             }
@@ -41,7 +42,7 @@ public class FunctionExpr extends Expr {
 
         // sin(0) = 0, cos(0) = 1, etc.
         if (A instanceof Constant) {
-            double value = ((Constant) A).value;
+            double value = ((Constant) A).getValue();
             switch (name) {
                 case "sin":
                     if (value == 0) return new Constant(0);
@@ -64,5 +65,68 @@ public class FunctionExpr extends Expr {
     @Override
     public String show() {
         return name + "(" + arg.show() + ")";
+    }
+
+    @Override
+    public double evaluate(Map<String, Double> variables) {
+        double argValue = arg.evaluate(variables);
+
+        switch (name) {
+            case "sin":
+                return Math.sin(argValue);
+            case "cos":
+                return Math.cos(argValue);
+            case "tan":
+                return Math.tan(argValue);
+            case "ln":
+                if (argValue <= 0) {
+                    throw new IllegalArgumentException(
+                        "ln argument must be positive"
+                    );
+                }
+                return Math.log(argValue);
+            case "log":
+                if (argValue <= 0) {
+                    throw new IllegalArgumentException(
+                        "log argument must be positive"
+                    );
+                }
+                return Math.log10(argValue);
+            case "exp":
+                return Math.exp(argValue);
+            case "sqrt":
+                if (argValue < 0) {
+                    throw new IllegalArgumentException(
+                        "sqrt argument must be non-negative"
+                    );
+                }
+                return Math.sqrt(argValue);
+            case "abs":
+                return Math.abs(argValue);
+            default:
+                throw new UnsupportedOperationException(
+                    "Unknown function: " + name
+                );
+        }
+    }
+
+    @Override
+    public Expr copy() {
+        return new FunctionExpr(name, arg.copy());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof FunctionExpr)) return false;
+        FunctionExpr other = (FunctionExpr) obj;
+        return (
+            Objects.equals(name, other.name) && Objects.equals(arg, other.arg)
+        );
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, arg);
     }
 }

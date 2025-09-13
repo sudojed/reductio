@@ -13,25 +13,26 @@ public class Polinomial extends Function {
 
     public Polinomial() {
         super();
+        this.grau = 0;
+        this.coeficientes = new double[] { 0 };
     }
 
     public Polinomial(String expression, String variable) {
         super(expression, variable);
-        this.grau = determinarGrau(expression);
+        this.grau = determinarGrau(expression, variable);
         this.coeficientes = extrairCoeficientes(expression, variable);
     }
 
     public Polinomial(double[] coeficientes, String variable) {
-        this.coeficientes = coeficientes;
+        super(construirExpressao(coeficientes, variable), variable);
+        this.coeficientes = coeficientes.clone();
         this.grau = coeficientes.length - 1;
-        this.variable = variable;
-        this.expression = construirExpressao(coeficientes, variable);
     }
 
     /**
      * Determina o grau do polinômio baseado na expressão
      */
-    private int determinarGrau(String expression) {
+    private int determinarGrau(String expression, String variable) {
         int maxGrau = 0;
 
         // Procurar por padrões como x^n
@@ -61,14 +62,28 @@ public class Polinomial extends Function {
 
         // Implementação simplificada - pode ser expandida
         // Por agora, assume formato padrão
+        // Inicializa com valores padrão
+        for (int i = 0; i <= grau; i++) {
+            coefs[i] = 0;
+        }
+
+        // Se é uma expressão simples como "x", define coeficiente 1 para x
+        if (expression.trim().equals(variable)) {
+            if (grau >= 1) {
+                coefs[1] = 1;
+            }
+        }
 
         return coefs;
     }
 
     /**
-     * Constrói a expressão a partir dos coeficientes
+     * Constrói a expressão a partir dos coeficientes (método estático)
      */
-    private String construirExpressao(double[] coeficientes, String variable) {
+    private static String construirExpressao(
+        double[] coeficientes,
+        String variable
+    ) {
         StringBuilder sb = new StringBuilder();
         boolean primeiro = true;
 
@@ -106,7 +121,16 @@ public class Polinomial extends Function {
             primeiro = false;
         }
 
+        if (sb.length() == 0) {
+            return "0";
+        }
+
         return sb.toString();
+    }
+
+    @Override
+    public Function copy() {
+        return new Polinomial(coeficientes.clone(), getVariable());
     }
 
     @Override
@@ -148,7 +172,7 @@ public class Polinomial extends Function {
      */
     public Polinomial derivada() {
         if (grau == 0) {
-            return new Polinomial(new double[] { 0 }, variable);
+            return new Polinomial(new double[] { 0 }, getVariable());
         }
 
         double[] novoCoefs = new double[grau];
@@ -157,7 +181,7 @@ public class Polinomial extends Function {
             novoCoefs[i - 1] = i * coeficientes[i];
         }
 
-        return new Polinomial(novoCoefs, variable);
+        return new Polinomial(novoCoefs, getVariable());
     }
 
     /**
@@ -182,5 +206,14 @@ public class Polinomial extends Function {
             return coeficientes[grau];
         }
         return 0;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+            "Polinomial[grau=%d, expressão=%s]",
+            grau,
+            getExpression()
+        );
     }
 }

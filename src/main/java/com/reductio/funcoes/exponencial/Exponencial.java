@@ -32,14 +32,12 @@ public class Exponencial extends Function {
         double e,
         String variable
     ) {
-        super();
+        super(construirExpressaoStatic(a, base, c, d, e, variable), variable);
         this.a = a;
         this.base = base;
         this.c = c;
         this.d = d;
         this.e = e;
-        this.variable = variable;
-        this.expression = construirExpressao();
     }
 
     /**
@@ -47,6 +45,66 @@ public class Exponencial extends Function {
      */
     public Exponencial(double a, double base, String variable) {
         this(a, base, 1, 0, 0, variable);
+    }
+
+    /**
+     * Constrói a expressão a partir dos parâmetros (método estático)
+     */
+    private static String construirExpressaoStatic(
+        double a,
+        double base,
+        double c,
+        double d,
+        double e,
+        String variable
+    ) {
+        StringBuilder sb = new StringBuilder();
+
+        // Coeficiente multiplicativo
+        if (a != 1) {
+            sb.append(a).append(" * ");
+        }
+
+        // Base
+        if (Math.abs(base - Math.E) < 1e-10) {
+            sb.append("e");
+        } else {
+            sb.append(base);
+        }
+
+        sb.append("^");
+
+        // Expoente
+        if (c != 1 || d != 0) {
+            sb.append("(");
+
+            if (c == 1) {
+                sb.append(variable);
+            } else if (c == -1) {
+                sb.append("-").append(variable);
+            } else {
+                sb.append(c).append(variable);
+            }
+
+            if (d > 0) {
+                sb.append(" + ").append(d);
+            } else if (d < 0) {
+                sb.append(" - ").append(Math.abs(d));
+            }
+
+            sb.append(")");
+        } else {
+            sb.append(variable);
+        }
+
+        // Termo aditivo
+        if (e > 0) {
+            sb.append(" + ").append(e);
+        } else if (e < 0) {
+            sb.append(" - ").append(Math.abs(e));
+        }
+
+        return sb.toString();
     }
 
     /**
@@ -141,53 +199,12 @@ public class Exponencial extends Function {
      * Constrói a expressão a partir dos parâmetros
      */
     private String construirExpressao() {
-        StringBuilder sb = new StringBuilder();
+        return construirExpressaoStatic(a, base, c, d, e, getVariable());
+    }
 
-        // Coeficiente multiplicativo
-        if (a != 1) {
-            sb.append(a).append(" * ");
-        }
-
-        // Base
-        if (base == Math.E) {
-            sb.append("e");
-        } else {
-            sb.append(base);
-        }
-
-        sb.append("^");
-
-        // Expoente
-        if (c != 1 || d != 0) {
-            sb.append("(");
-
-            if (c == 1) {
-                sb.append(variable);
-            } else if (c == -1) {
-                sb.append("-").append(variable);
-            } else {
-                sb.append(c).append(variable);
-            }
-
-            if (d > 0) {
-                sb.append(" + ").append(d);
-            } else if (d < 0) {
-                sb.append(" - ").append(Math.abs(d));
-            }
-
-            sb.append(")");
-        } else {
-            sb.append(variable);
-        }
-
-        // Termo aditivo
-        if (e > 0) {
-            sb.append(" + ").append(e);
-        } else if (e < 0) {
-            sb.append(" - ").append(Math.abs(e));
-        }
-
-        return sb.toString();
+    @Override
+    public Function copy() {
+        return new Exponencial(a, base, c, d, e, getVariable());
     }
 
     @Override
@@ -307,7 +324,7 @@ public class Exponencial extends Function {
     public String getAnaliseCompleta() {
         StringBuilder sb = new StringBuilder();
         sb.append("Análise da Função Exponencial:\n");
-        sb.append("Expressão: ").append(expression).append("\n");
+        sb.append("Expressão: ").append(getExpression()).append("\n");
         sb.append("Base: ").append(base).append("\n");
         sb.append("Domínio: ").append(getDomain()).append("\n");
         sb.append("Imagem: ").append(getRange()).append("\n");
@@ -368,7 +385,7 @@ public class Exponencial extends Function {
             c,
             d,
             e,
-            expression
+            getExpression()
         );
     }
 }

@@ -1,9 +1,9 @@
 # Reductio
 
-[![Java](https://img.shields.io/badge/Java-17+-orange.svg)](https://www.oracle.com/java/)
+[![Java](https://img.shields.io/badge/Java-11+-orange.svg)](https://www.oracle.com/java/)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![JitPack](https://jitpack.io/v/sudojed/reductio.svg)](https://jitpack.io/#sudojed/reductio)
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)]()
-[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)]()
 
 A powerful Java library for parsing, simplifying, and analyzing mathematical expressions with automatic function type identification.
 
@@ -18,27 +18,60 @@ A powerful Java library for parsing, simplifying, and analyzing mathematical exp
 
 ## 📦 Installation
 
-### Maven
+### JitPack (Recommended)
+
+Add the JitPack repository to your build file:
+
+#### Maven
 
 ```xml
-<dependency>
-    <groupId>com.reductio</groupId>
-    <artifactId>reductio</artifactId>
-    <version>1.0.0</version>
-</dependency>
+<repositories>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+</repositories>
+
+<dependencies>
+    <dependency>
+        <groupId>com.github.sudojed</groupId>
+        <artifactId>reductio</artifactId>
+        <version>1.0.0</version>
+    </dependency>
+</dependencies>
 ```
 
-### Gradle
+#### Gradle
 
 ```gradle
-implementation 'com.reductio:reductio:1.0.0'
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    implementation 'com.github.sudojed:reductio:1.0.0'
+}
+```
+
+#### SBT
+
+```scala
+resolvers += "jitpack" at "https://jitpack.io"
+libraryDependencies += "com.github.sudojed" % "reductio" % "1.0.0"
+```
+
+#### Leiningen
+
+```clojure
+:repositories [["jitpack" "https://jitpack.io"]]
+:dependencies [[com.github.sudojed/reductio "1.0.0"]]
 ```
 
 ### Manual Installation
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/jedin01/reductio/reductio.git
+git clone https://github.com/sudojed/reductio.git
 ```
 
 2. Build from source:
@@ -343,10 +376,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🆘 Support
 
-- **Documentation**: [Wiki](https://github.com/reductio/reductio/wiki)
-- **Issues**: [GitHub Issues](https://github.com/reductio/reductio/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/reductio/reductio/discussions)
-- **Email**: support@reductio.com
+- **Documentation**: [Wiki](https://github.com/sudojed/reductio/wiki)
+- **Issues**: [GitHub Issues](https://github.com/sudojed/reductio/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/sudojed/reductio/discussions)
+- **Email**: abnerjaredejede@gmail.com
 
 ## 🗺️ Roadmap
 
@@ -376,13 +409,13 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📊 Stats
 
-![GitHub stars](https://img.shields.io/github/stars/reductio/reductio?style=social)
-![GitHub forks](https://img.shields.io/github/forks/reductio/reductio?style=social)
-![GitHub issues](https://img.shields.io/github/issues/reductio/reductio)
-![GitHub pull requests](https://img.shields.io/github/issues-pr/reductio/reductio)
+![GitHub stars](https://img.shields.io/github/stars/sudojed/reductio?style=social)
+![GitHub forks](https://img.shields.io/github/forks/sudojed/reductio?style=social)
+![GitHub issues](https://img.shields.io/github/issues/sudojed/reductio)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/sudojed/reductio)
 
 ---
 
 <div align="center">
-  <sub>Built with ❤️ by the Abner Lourenço</sub>
+  <sub>Built with ❤️ by Abner Lourenço</sub>
 </div>
