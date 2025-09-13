@@ -1,0 +1,120 @@
+name: Publish to GitHub Packages
+
+on:
+  push:
+    tags:
+      - 'v*'
+      - '[0-9]+.[0-9]+.[0-9]+'
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to publish (leave empty for current)'
+        required: false
+        type: string
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 11
+      uses: actions/setup-java@v4
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+        server-id: github
+        server-username: MAVEN_USERNAME
+        server-password: MAVEN_TOKEN
+
+    - name: Cache Maven dependencies
+      uses: actions/cache@v4
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+        restore-keys: ${{ runner.os }}-m2
+
+    - name: Get version from tag
+      id: get_version
+      run: |
+        if [ "${{ github.event.inputs.version }}" != "" ]; then
+          VERSION="${{ github.event.inputs.version }}"
+        elif [ "${{ github.ref_type }}" == "tag" ]; then
+          VERSION=${GITHUB_REF#refs/tags/}
+          VERSION=${VERSION#v}
+        else
+          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+        fi
+        echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+        echo "Publishing version: $VERSION"
+
+    - name: Update version in pom.xml
+      run: |
+        mvn versions:set -DnewVersion=${{ steps.get_version.outputs.VERSION }} -DgenerateBackupPoms=false
+
+    - name: Run tests
+      run: mvn clean test
+
+    - name: Build project
+      run: mvn clean compile
+
+    - name: Generate sources and javadoc
+      run: mvn source:jar javadoc:jar
+
+    - name: Publish to GitHub Packages
+      run: mvn deploy -DskipTests=true
+      env:
+        MAVEN_USERNAME: ${{ github.actor }}
+        MAVEN_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Create release artifact
+      run: |
+        mkdir -p release-artifacts
+        cp target/*.jar release-artifacts/
+        cp pom.xml release-artifacts/
+        cp README.md release-artifacts/
+        cp RELEASE_NOTES.md release-artifacts/
+
+    - name: Upload release artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: reductio-${{ steps.get_version.outputs.VERSION }}
+        path: release-artifacts/
+        retention-days: 90
+
+    - name: Create GitHub Release (if tag push)
+      if: github.ref_type == 'tag'
+      uses: softprops/action-gh-release@v2
+      with:
+        files: |
+          target/reductio-*.jar
+          RELEASE_NOTES.md
+        body_path: RELEASE_NOTES.md
+        draft: false
+        prerelease: false
+        generate_release_notes: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Notify success
+      run: |
+        echo "✅ Successfully published Reductio v${{ steps.get_version.outputs.VERSION }} to GitHub Packages!"
+        echo "📦 Package available at: https://github.com/sudojed/reductio/packages"
+        echo "📝 Installation instructions:"
+        echo ""
+        echo "Maven:"
+        echo "<dependency>"
+        echo "  <groupId>com.github.sudojed</groupId>"
+        echo "  <artifactId>reductio</artifactId>"
+        echo "  <version>${{ steps.get_version.outputs.VERSION }}</version>"
+        echo "</dependency>"
+        echo ""
+        echo "Gradle:"
+        echo "implementation 'com.github.sudojed:reductio:${{ steps.get_version.outputs.VERSION }}'"

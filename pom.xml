@@ -201,4 +201,13 @@
         </repository>
     </repositories>
 
+    <!-- Distribution Management for GitHub Packages -->
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub Packages</name>
+            <url>https://maven.pkg.github.com/sudojed/reductio</url>
+        </repository>
+    </distributionManagement>
+
 </project>

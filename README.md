@@ -18,7 +18,60 @@ A powerful Java library for parsing, simplifying, and analyzing mathematical exp
 
 ## 📦 Installation
 
-### JitPack (Recommended)
+### GitHub Packages (Recommended)
+
+Add the GitHub Packages repository to your build file:
+
+#### Maven
+
+```xml
+<repositories>
+    <repository>
+        <id>github</id>
+        <url>https://maven.pkg.github.com/sudojed/reductio</url>
+    </repository>
+</repositories>
+
+<dependencies>
+    <dependency>
+        <groupId>com.github.sudojed</groupId>
+        <artifactId>reductio</artifactId>
+        <version>1.1.0</version>
+    </dependency>
+</dependencies>
+```
+
+**Note:** You'll need to authenticate with GitHub Packages. Add to your `~/.m2/settings.xml`:
+
+```xml
+<servers>
+    <server>
+        <id>github</id>
+        <username>YOUR_GITHUB_USERNAME</username>
+        <password>YOUR_GITHUB_TOKEN</password>
+    </server>
+</servers>
+```
+
+#### Gradle
+
+```gradle
+repositories {
+    maven {
+        url = uri("https://maven.pkg.github.com/sudojed/reductio")
+        credentials {
+            username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+            password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
+        }
+    }
+}
+
+dependencies {
+    implementation 'com.github.sudojed:reductio:1.1.0'
+}
+```
+
+### JitPack (Alternative)
 
 Add the JitPack repository to your build file:
 
@@ -66,6 +119,19 @@ libraryDependencies += "com.github.sudojed" % "reductio" % "v1.1.0"
 :repositories [["jitpack" "https://jitpack.io"]]
 :dependencies [[com.github.sudojed/reductio "v1.1.0"]]
 ```
+
+### GitHub Token Setup
+
+To use GitHub Packages, you'll need a Personal Access Token:
+
+1. Go to GitHub Settings → Developer settings → Personal access tokens → Tokens (classic)
+2. Generate a new token with `read:packages` scope
+3. Set environment variables:
+   ```bash
+   export GITHUB_USERNAME=your-username
+   export GITHUB_TOKEN=your-token
+   ```
+4. Or add to your Maven `settings.xml` or Gradle `gradle.properties`
 
 ### Manual Installation
 
