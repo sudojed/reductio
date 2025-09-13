@@ -95,7 +95,9 @@ public class Reductio {
     // ================= POTENCIAÇÃO ==================
     private String reducePowers(String expr) {
         // (x^a)^b -> x^(a*b)
-        expr = expr.replaceAll("\\(([^)]+)\\)\\^(\\d+)", "$1^$2");
+        // Only remove parentheses if they are around a single variable or a single number
+        expr = expr.replaceAll("\\(([a-zA-Z])\\)\\^(\\d+)", "$1^$2");
+        expr = expr.replaceAll("\\((\\d+)\\)\\^(\\d+)", "$1^$2");
 
         // x^0 -> 1
         expr = expr.replaceAll("([a-zA-Z]+)\\^0", "1");
