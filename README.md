@@ -133,6 +133,59 @@ To use GitHub Packages, you'll need a Personal Access Token:
    ```
 4. Or add to your Maven `settings.xml` or Gradle `gradle.properties`
 
+### Quick Start with GitHub Packages
+
+#### 1. Get a GitHub Token
+```bash
+# Create a token at: https://github.com/settings/tokens
+# Select scope: read:packages
+export GITHUB_USERNAME=your-username
+export GITHUB_TOKEN=ghp_your_token_here
+```
+
+#### 2. Add Repository (Maven)
+```xml
+<!-- Add to pom.xml -->
+<repositories>
+    <repository>
+        <id>github</id>
+        <url>https://maven.pkg.github.com/sudojed/reductio</url>
+    </repository>
+</repositories>
+```
+
+#### 3. Configure Authentication
+```xml
+<!-- Add to ~/.m2/settings.xml -->
+<servers>
+    <server>
+        <id>github</id>
+        <username>${env.GITHUB_USERNAME}</username>
+        <password>${env.GITHUB_TOKEN}</password>
+    </server>
+</servers>
+```
+
+#### 4. Add Dependency
+```xml
+<dependency>
+    <groupId>com.github.sudojed</groupId>
+    <artifactId>reductio</artifactId>
+    <version>1.1.0</version>
+</dependency>
+```
+
+#### 5. Use in Your Code
+```java
+import com.reductio.Parser;
+import com.reductio.Expr;
+
+// Parse and simplify expressions
+Expr expr = Parser.parse("x^2 - 4x + 3");
+Expr simplified = expr.simplify();
+System.out.println(simplified.show());
+```
+
 ### Manual Installation
 
 1. Clone the repository:
