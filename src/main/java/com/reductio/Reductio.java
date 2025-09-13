@@ -134,16 +134,36 @@ public class Reductio {
             termos.put(exp, termos.getOrDefault(exp, 0) + coef);
         }
 
-        String reduzido = expr;
-        for (Map.Entry<Integer, Integer> entry : termos.entrySet()) {
-            int exp = entry.getKey();
-            int coef = entry.getValue();
-            reduzido = reduzido.replaceAll("([+-]?\\d*)x\\^" + exp, "");
-            if (coef != 0) {
-                reduzido = coef + "x^" + exp + (reduzido.isEmpty() ? "" : "+" + reduzido);
+        // Reconstruct the reduced polynomial expression
+        List<Integer> exps = new ArrayList<>(termos.keySet());
+        Collections.sort(exps, Collections.reverseOrder());
+        StringBuilder polyBuilder = new StringBuilder();
+        for (int exp : exps) {
+            int coef = termos.get(exp);
+            if (coef == 0) continue;
+            if (polyBuilder.length() > 0 && coef > 0) {
+                polyBuilder.append("+");
+            }
+            if (coef == 1) {
+                polyBuilder.append("x^").append(exp);
+            } else if (coef == -1) {
+                polyBuilder.append("-x^").append(exp);
+            } else {
+                polyBuilder.append(coef).append("x^").append(exp);
             }
         }
-
+        // Remove all polynomial terms from the original expression
+        String nonPoly = expr.replaceAll("([+-]?\\d*)x\\^\\d+", "");
+        // Clean up leading/trailing pluses
+        String reduzido = polyBuilder.toString();
+        if (!nonPoly.isEmpty()) {
+            if (!reduzido.isEmpty() && !nonPoly.startsWith("+") && !nonPoly.startsWith("-")) {
+                reduzido += "+" + nonPoly;
+            } else {
+                reduzido += nonPoly;
+            }
+        }
+        // Clean up double plus/minus
         reduzido = reduzido.replaceAll("\\+\\+", "+")
                 .replaceAll("\\+-", "-")
                 .replaceAll("-\\+", "-");
