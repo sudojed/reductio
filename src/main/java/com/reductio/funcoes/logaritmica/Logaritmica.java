@@ -24,15 +24,20 @@ public class Logaritmica extends Function {
         extrairParametrosLogaritmicos(expression, variable);
     }
 
-    public Logaritmica(double a, double base, double c, double d, double e, String variable) {
-        super();
+    public Logaritmica(
+        double a,
+        double base,
+        double c,
+        double d,
+        double e,
+        String variable
+    ) {
+        super(construirExpressaoStatic(a, base, c, d, e, variable), variable);
         this.a = a;
         this.base = base;
         this.c = c;
         this.d = d;
         this.e = e;
-        this.variable = variable;
-        this.expression = construirExpressao();
     }
 
     /**
@@ -43,9 +48,72 @@ public class Logaritmica extends Function {
     }
 
     /**
+     * Constrói a expressão a partir dos parâmetros (método estático)
+     */
+    private static String construirExpressaoStatic(
+        double a,
+        double base,
+        double c,
+        double d,
+        double e,
+        String variable
+    ) {
+        StringBuilder sb = new StringBuilder();
+
+        // Coeficiente multiplicativo
+        if (a != 1) {
+            if (a == -1) {
+                sb.append("-");
+            } else {
+                sb.append(a).append(" * ");
+            }
+        }
+
+        // Função logarítmica
+        if (Math.abs(base - Math.E) < 1e-10) {
+            sb.append("ln");
+        } else if (Math.abs(base - 10) < 1e-10) {
+            sb.append("log");
+        } else {
+            sb.append("log_").append(base);
+        }
+
+        sb.append("(");
+
+        // Argumento
+        if (c == 1) {
+            sb.append(variable);
+        } else if (c == -1) {
+            sb.append("-").append(variable);
+        } else {
+            sb.append(c).append(variable);
+        }
+
+        if (d > 0) {
+            sb.append(" + ").append(d);
+        } else if (d < 0) {
+            sb.append(" - ").append(Math.abs(d));
+        }
+
+        sb.append(")");
+
+        // Termo aditivo
+        if (e > 0) {
+            sb.append(" + ").append(e);
+        } else if (e < 0) {
+            sb.append(" - ").append(Math.abs(e));
+        }
+
+        return sb.toString();
+    }
+
+    /**
      * Extrai os parâmetros da função logarítmica
      */
-    private void extrairParametrosLogaritmicos(String expression, String variable) {
+    private void extrairParametrosLogaritmicos(
+        String expression,
+        String variable
+    ) {
         // Implementação simplificada - detecta padrões básicos
         String expr = expression.replaceAll("\\s+", "");
 
@@ -59,9 +127,10 @@ public class Logaritmica extends Function {
         // Detecta padrões como "ln(x)", "log(x)", "2*ln(3x+1)", etc.
         if (expr.contains("ln") || expr.contains("log")) {
             // Coeficiente multiplicativo antes do logaritmo
-            java.util.regex.Pattern patternCoef = java.util.regex.Pattern.compile(
-                "([+-]?\\d*\\.?\\d*)\\*?(ln|log)"
-            );
+            java.util.regex.Pattern patternCoef =
+                java.util.regex.Pattern.compile(
+                    "([+-]?\\d*\\.?\\d*)\\*?(ln|log)"
+                );
             java.util.regex.Matcher matcherCoef = patternCoef.matcher(expr);
 
             if (matcherCoef.find()) {
@@ -69,7 +138,11 @@ public class Logaritmica extends Function {
                 String funcao = matcherCoef.group(2);
 
                 // Coeficiente multiplicativo
-                if (!coefStr.isEmpty() && !coefStr.equals("+") && !coefStr.equals("-")) {
+                if (
+                    !coefStr.isEmpty() &&
+                    !coefStr.equals("+") &&
+                    !coefStr.equals("-")
+                ) {
                     this.a = Double.parseDouble(coefStr);
                 } else if (coefStr.equals("-")) {
                     this.a = -1;
@@ -84,9 +157,8 @@ public class Logaritmica extends Function {
             }
 
             // Extrai o argumento do logaritmo
-            java.util.regex.Pattern patternArg = java.util.regex.Pattern.compile(
-                "(ln|log)\\((.*?)\\)"
-            );
+            java.util.regex.Pattern patternArg =
+                java.util.regex.Pattern.compile("(ln|log)\\((.*?)\\)");
             java.util.regex.Matcher matcherArg = patternArg.matcher(expr);
 
             if (matcherArg.find()) {
@@ -95,11 +167,13 @@ public class Logaritmica extends Function {
             }
 
             // Termo aditivo após o logaritmo
-            String semLog = expr.replaceAll("[+-]?\\d*\\.?\\d*\\*?(ln|log)\\(.*?\\)", "");
+            String semLog = expr.replaceAll(
+                "[+-]?\\d*\\.?\\d*\\*?(ln|log)\\(.*?\\)",
+                ""
+            );
             if (!semLog.isEmpty()) {
-                java.util.regex.Pattern patternE = java.util.regex.Pattern.compile(
-                    "([+-]?\\d+(?:\\.\\d+)?)"
-                );
+                java.util.regex.Pattern patternE =
+                    java.util.regex.Pattern.compile("([+-]?\\d+(?:\\.\\d+)?)");
                 java.util.regex.Matcher matcherE = patternE.matcher(semLog);
 
                 if (matcherE.find()) {
@@ -112,7 +186,10 @@ public class Logaritmica extends Function {
     /**
      * Extrai coeficientes c e d do argumento (cx + d)
      */
-    private void extrairCoeficientesArgumento(String argumento, String variable) {
+    private void extrairCoeficientesArgumento(
+        String argumento,
+        String variable
+    ) {
         // Remove espaços
         String arg = argumento.replaceAll("\\s+", "");
 
@@ -151,53 +228,12 @@ public class Logaritmica extends Function {
      * Constrói a expressão a partir dos parâmetros
      */
     private String construirExpressao() {
-        StringBuilder sb = new StringBuilder();
+        return construirExpressaoStatic(a, base, c, d, e, getVariable());
+    }
 
-        // Coeficiente multiplicativo
-        if (a != 1) {
-            if (a == -1) {
-                sb.append("-");
-            } else {
-                sb.append(a).append(" * ");
-            }
-        }
-
-        // Função logarítmica
-        if (base == Math.E) {
-            sb.append("ln");
-        } else if (base == 10) {
-            sb.append("log");
-        } else {
-            sb.append("log_").append(base);
-        }
-
-        sb.append("(");
-
-        // Argumento
-        if (c == 1) {
-            sb.append(variable);
-        } else if (c == -1) {
-            sb.append("-").append(variable);
-        } else {
-            sb.append(c).append(variable);
-        }
-
-        if (d > 0) {
-            sb.append(" + ").append(d);
-        } else if (d < 0) {
-            sb.append(" - ").append(Math.abs(d));
-        }
-
-        sb.append(")");
-
-        // Termo aditivo
-        if (e > 0) {
-            sb.append(" + ").append(e);
-        } else if (e < 0) {
-            sb.append(" - ").append(Math.abs(e));
-        }
-
-        return sb.toString();
+    @Override
+    public Function copy() {
+        return new Logaritmica(a, base, c, d, e, getVariable());
     }
 
     @Override
@@ -208,9 +244,9 @@ public class Logaritmica extends Function {
     @Override
     public String getDomain() {
         if (c > 0) {
-            return "(" + (-d/c) + ", +∞)";
+            return "(" + (-d / c) + ", +∞)";
         } else if (c < 0) {
-            return "(-∞, " + (-d/c) + ")";
+            return "(-∞, " + (-d / c) + ")";
         }
         return "Indefinido";
     }
@@ -224,7 +260,9 @@ public class Logaritmica extends Function {
     public double evaluate(double x) {
         double argumento = c * x + d;
         if (argumento <= 0) {
-            throw new IllegalArgumentException("Argumento do logaritmo deve ser positivo");
+            throw new IllegalArgumentException(
+                "Argumento do logaritmo deve ser positivo"
+            );
         }
         return a * (Math.log(argumento) / Math.log(base)) + e;
     }
@@ -250,7 +288,9 @@ public class Logaritmica extends Function {
         if (d > 0) {
             return evaluate(0);
         } else {
-            throw new IllegalArgumentException("Função não intercepta o eixo y");
+            throw new IllegalArgumentException(
+                "Função não intercepta o eixo y"
+            );
         }
     }
 
@@ -264,7 +304,9 @@ public class Logaritmica extends Function {
         // x = (b^(-e/a) - d) / c
 
         if (a == 0) {
-            throw new IllegalArgumentException("Coeficiente 'a' não pode ser zero");
+            throw new IllegalArgumentException(
+                "Coeficiente 'a' não pode ser zero"
+            );
         }
 
         double exponente = -e / a;
@@ -285,7 +327,9 @@ public class Logaritmica extends Function {
     public double calcularDerivada(double x) {
         double argumento = c * x + d;
         if (argumento <= 0) {
-            throw new IllegalArgumentException("Argumento do logaritmo deve ser positivo");
+            throw new IllegalArgumentException(
+                "Argumento do logaritmo deve ser positivo"
+            );
         }
         return (a * c) / (argumento * Math.log(base));
     }
@@ -300,7 +344,9 @@ public class Logaritmica extends Function {
         // x = (b^((y - e) / a) - d) / c
 
         if (a == 0) {
-            throw new IllegalArgumentException("Coeficiente 'a' não pode ser zero");
+            throw new IllegalArgumentException(
+                "Coeficiente 'a' não pode ser zero"
+            );
         }
 
         double exponente = (y - e) / a;
@@ -328,7 +374,7 @@ public class Logaritmica extends Function {
     public String getAnaliseCompleta() {
         StringBuilder sb = new StringBuilder();
         sb.append("Análise da Função Logarítmica:\n");
-        sb.append("Expressão: ").append(expression).append("\n");
+        sb.append("Expressão: ").append(getExpression()).append("\n");
         sb.append("Base: ").append(base).append("\n");
         sb.append("Domínio: ").append(getDomain()).append("\n");
         sb.append("Imagem: ").append(getRange()).append("\n");
@@ -340,9 +386,20 @@ public class Logaritmica extends Function {
         }
 
         sb.append("Intercepto X: ").append(getInterceptoX()).append("\n");
-        sb.append("Assíntota vertical: x = ").append(getAssintotaVertical()).append("\n");
-        sb.append("Comportamento: ").append(isCrescente() ? "Crescente" :
-                 isDecrescente() ? "Decrescente" : "Constante").append("\n");
+        sb
+            .append("Assíntota vertical: x = ")
+            .append(getAssintotaVertical())
+            .append("\n");
+        sb
+            .append("Comportamento: ")
+            .append(
+                isCrescente()
+                    ? "Crescente"
+                    : isDecrescente()
+                        ? "Decrescente"
+                        : "Constante"
+            )
+            .append("\n");
 
         if (isLogaritmoNatural()) {
             sb.append("Tipo: Logaritmo natural (base e)\n");
@@ -378,7 +435,12 @@ public class Logaritmica extends Function {
     public String toString() {
         return String.format(
             "Logaritmica[a=%.2f, base=%.2f, c=%.2f, d=%.2f, e=%.2f, expressão=%s]",
-            a, base, c, d, e, expression
+            a,
+            base,
+            c,
+            d,
+            e,
+            getExpression()
         );
     }
 }
