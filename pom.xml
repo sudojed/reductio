@@ -201,13 +201,4 @@
         </repository>
     </repositories>
 
-    <!-- Distribution Management for JitPack -->
-    <distributionManagement>
-        <repository>
-            <id>github</id>
-            <name>GitHub sudojed Apache Maven Packages</name>
-            <url>https://maven.pkg.github.com/sudojed/reductio</url>
-        </repository>
-    </distributionManagement>
-
 </project>
