@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.reductio.ReductioBasicTest" time="0.187" tests="11" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.reductio.ReductioBasicTest" time="0.178" tests="11" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="21"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
@@ -12,7 +12,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="US"/>
     <property name="sun.boot.library.path" value="/usr/lib/jvm/java-21-openjdk/lib"/>
-    <property name="sun.java.command" value="/home/abnerlourenco/Documents/running/reductio/target/surefire/surefirebooter-20250913031242200_3.jar /home/abnerlourenco/Documents/running/reductio/target/surefire 2025-09-13T03-12-42_030-jvmRun1 surefire-20250913031242200_1tmp surefire_0-20250913031242200_2tmp"/>
+    <property name="sun.java.command" value="/home/abnerlourenco/Documents/running/reductio/target/surefire/surefirebooter-20250913033109921_3.jar /home/abnerlourenco/Documents/running/reductio/target/surefire 2025-09-13T03-31-09_731-jvmRun1 surefire-20250913033109921_1tmp surefire_0-20250913033109921_2tmp"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="/home/abnerlourenco/Documents/running/reductio/target/test-classes:/home/abnerlourenco/Documents/running/reductio/target/classes:/home/abnerlourenco/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.9.3/junit-jupiter-api-5.9.3.jar:/home/abnerlourenco/.m2/repository/org/opentest4j/opentest4j/1.2.0/opentest4j-1.2.0.jar:/home/abnerlourenco/.m2/repository/org/junit/platform/junit-platform-commons/1.9.3/junit-platform-commons-1.9.3.jar:/home/abnerlourenco/.m2/repository/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar:/home/abnerlourenco/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.9.3/junit-jupiter-engine-5.9.3.jar:/home/abnerlourenco/.m2/repository/org/junit/platform/junit-platform-engine/1.9.3/junit-platform-engine-1.9.3.jar:/home/abnerlourenco/.m2/repository/org/mockito/mockito-core/5.3.1/mockito-core-5.3.1.jar:/home/abnerlourenco/.m2/repository/net/bytebuddy/byte-buddy/1.14.4/byte-buddy-1.14.4.jar:/home/abnerlourenco/.m2/repository/net/bytebuddy/byte-buddy-agent/1.14.4/byte-buddy-agent-1.14.4.jar:/home/abnerlourenco/.m2/repository/org/objenesis/objenesis/3.3/objenesis-3.3.jar:/home/abnerlourenco/.m2/repository/org/assertj/assertj-core/3.24.2/assertj-core-3.24.2.jar:"/>
     <property name="sun.cpu.endian" value="little"/>
@@ -27,7 +27,7 @@
     <property name="line.separator" value="&#10;"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
-    <property name="surefire.real.class.path" value="/home/abnerlourenco/Documents/running/reductio/target/surefire/surefirebooter-20250913031242200_3.jar"/>
+    <property name="surefire.real.class.path" value="/home/abnerlourenco/Documents/running/reductio/target/surefire/surefirebooter-20250913033109921_3.jar"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="21.0.8+9"/>
     <property name="user.name" value="abnerlourenco"/>
@@ -54,13 +54,13 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="65.0"/>
   </properties>
-  <testcase name="testLogarithmicFunction" classname="com.reductio.ReductioBasicTest" time="0.067"/>
-  <testcase name="testFunctionStringRepresentation" classname="com.reductio.ReductioBasicTest" time="0.017"/>
-  <testcase name="testBasicExpressionCreation" classname="com.reductio.ReductioBasicTest" time="0.013"/>
-  <testcase name="testFunctionExpressionCreation" classname="com.reductio.ReductioBasicTest" time="0.007"/>
+  <testcase name="testLogarithmicFunction" classname="com.reductio.ReductioBasicTest" time="0.062"/>
+  <testcase name="testFunctionStringRepresentation" classname="com.reductio.ReductioBasicTest" time="0.015"/>
+  <testcase name="testBasicExpressionCreation" classname="com.reductio.ReductioBasicTest" time="0.014"/>
+  <testcase name="testFunctionExpressionCreation" classname="com.reductio.ReductioBasicTest" time="0.005"/>
   <testcase name="testExpressionEvaluation" classname="com.reductio.ReductioBasicTest" time="0.002"/>
   <testcase name="testExpressionCopying" classname="com.reductio.ReductioBasicTest" time="0.002"/>
-  <testcase name="testTrigonometricFunction" classname="com.reductio.ReductioBasicTest" time="0.007"/>
+  <testcase name="testTrigonometricFunction" classname="com.reductio.ReductioBasicTest" time="0.006"/>
   <testcase name="testExponentialFunction" classname="com.reductio.ReductioBasicTest" time="0.002"/>
   <testcase name="testErrorHandling" classname="com.reductio.ReductioBasicTest" time="0.004"/>
   <testcase name="testExpressionSimplification" classname="com.reductio.ReductioBasicTest" time="0.002"/>
