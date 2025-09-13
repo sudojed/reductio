@@ -113,11 +113,6 @@
             <version>${assertj.version}</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>com.github.sudojed</groupId>
-            <artifactId>minha-lib</artifactId>
-            <version>v1.0.0</version>
-        </dependency>
     </dependencies>
 
     <!-- Build Configuration -->
