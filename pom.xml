@@ -28,19 +28,6 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
-    <!-- Developer Information -->
-    <developers>
-        <developer>
-            <id>sudojed</id>
-            <name>Abner Lourenço</name>
-            <email>abnerjaredejede@gmail.com</email>
-            <url>https://github.com/sudojed</url>
-            <roles>
-                <role>architect</role>
-                <role>developer</role>
-            </roles>
-        </developer>
-    </developers>
 
     <!-- Developer Information -->
     <developers>
