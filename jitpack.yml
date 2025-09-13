@@ -7,32 +7,58 @@ jdk:
 
 # Build commands to execute
 install:
+  - echo "Starting Reductio build process..."
   - mvn clean compile -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+  - mvn package -DskipTests=true -B -V
+  - echo "Build completed successfully"
 
 # Environment variables
 env:
-  MAVEN_OPTS: "-Xmx1024m -XX:MaxPermSize=256m"
+  MAVEN_OPTS: "-Xmx2048m -XX:MaxMetaspaceSize=512m"
+  JAVA_TOOL_OPTIONS: "-Dfile.encoding=UTF-8"
 
 # Before install hooks
 before_install:
-  - echo "Starting JitPack build for Reductio"
+  - echo "=== JitPack Build for Reductio v1.1.0 ==="
+  - echo "Java version:"
   - java -version
+  - echo "Maven version:"
   - mvn -version
+  - echo "Current directory:"
+  - pwd
+  - echo "Available memory:"
+  - free -h
 
 # After success hooks
 after_success:
-  - echo "Build completed successfully"
+  - echo "=== Build completed successfully ==="
+  - echo "Generated artifacts:"
   - ls -la target/
+  - echo "JAR file details:"
+  - ls -la target/*.jar
+  - echo "=== Reductio is ready for distribution ==="
 
 # Build timeout (in minutes)
-timeout: 15
+timeout: 20
 
-# Cache settings
+# Cache settings for faster builds
 cache:
   - ~/.m2/repository
 
-# Branches to build
+# Branches to build automatically
 branches:
   - main
   - master
   - develop
+  - prod
+
+# Additional settings for better compatibility
+settings:
+  # Force UTF-8 encoding
+  encoding: UTF-8
+
+  # Enable verbose logging for debugging
+  verbose: true
+
+  # Retry failed builds
+  retry: 2
