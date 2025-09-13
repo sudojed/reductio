@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.reductio"},{"l":"com.reductio.funcoes"},{"l":"com.reductio.funcoes.exponencial"},{"l":"com.reductio.funcoes.logaritmica"},{"l":"com.reductio.funcoes.polinomial"},{"l":"com.reductio.funcoes.trigonometrica"}];updateSearchResults();
