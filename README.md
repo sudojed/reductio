@@ -36,7 +36,7 @@ Add the JitPack repository to your build file:
     <dependency>
         <groupId>com.github.sudojed</groupId>
         <artifactId>reductio</artifactId>
-        <version>1.0.0</version>
+        <version>v1.1.0</version>
     </dependency>
 </dependencies>
 ```
@@ -49,7 +49,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.sudojed:reductio:1.0.0'
+    implementation 'com.github.sudojed:reductio:v1.1.0'
 }
 ```
 
@@ -57,14 +57,14 @@ dependencies {
 
 ```scala
 resolvers += "jitpack" at "https://jitpack.io"
-libraryDependencies += "com.github.sudojed" % "reductio" % "1.0.0"
+libraryDependencies += "com.github.sudojed" % "reductio" % "v1.1.0"
 ```
 
 #### Leiningen
 
 ```clojure
 :repositories [["jitpack" "https://jitpack.io"]]
-:dependencies [[com.github.sudojed/reductio "1.0.0"]]
+:dependencies [[com.github.sudojed/reductio "v1.1.0"]]
 ```
 
 ### Manual Installation
@@ -383,13 +383,19 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🗺️ Roadmap
 
-### Version 1.1.0
+### Version 1.1.0 ✅
+- [x] Enhanced JitPack integration and build optimization
+- [x] Improved test coverage and code quality
+- [x] Better error handling and validation
+- [x] Cleaned up version control artifacts
+
+### Version 1.2.0
 - [ ] Hyperbolic functions (sinh, cosh, tanh)
 - [ ] Rational functions (P(x)/Q(x))
 - [ ] Implicit function support
 - [ ] Enhanced error messages
 
-### Version 1.2.0
+### Version 1.3.0
 - [ ] Symbolic differentiation
 - [ ] Basic integration
 - [ ] Function composition
